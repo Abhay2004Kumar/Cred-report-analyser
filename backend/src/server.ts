@@ -1,4 +1,4 @@
-import express, { Application } from 'express';
+import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
@@ -62,7 +62,7 @@ class Server {
     this.app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
     // Health check endpoint
-    this.app.get('/health', (req, res) => {
+    this.app.get('/health', (req: Request, res: Response) => {
       res.status(200).json({
         success: true,
         message: 'Server is running',
@@ -78,7 +78,7 @@ class Server {
     this.app.use('/api', creditReportRoutes);
 
     // Root endpoint
-    this.app.get('/', (req, res) => {
+    this.app.get('/', (req: Request, res: Response) => {
       res.json({
         success: true,
         message: 'Credit Report Analyzer API',
