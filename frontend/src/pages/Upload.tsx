@@ -167,58 +167,58 @@ const UploadPage: React.FC<UploadPageProps> = ({ onUploadSuccess }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 p-6">
-      <div className="max-w-4xl mx-auto space-y-8 animate-fade-in">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 p-3 sm:p-6">
+      <div className="max-w-full sm:max-w-3xl lg:max-w-4xl mx-auto space-y-4 sm:space-y-6 lg:space-y-8">
         {/* Enhanced Header */}
-        <div className="text-center space-y-4">
-          <div className="flex items-center justify-center space-x-3">
+        <div className="text-center space-y-3 sm:space-y-4 px-2 sm:px-0">
+          <div className="flex flex-col sm:flex-row items-center justify-center space-y-3 sm:space-y-0 sm:space-x-3">
             <div className="relative">
-              <CloudUpload className="h-12 w-12 text-blue-400 animate-pulse" />
+              <CloudUpload className="h-10 sm:h-12 w-10 sm:w-12 text-blue-400 animate-pulse" />
               <div className="absolute inset-0 bg-blue-400/20 rounded-full blur-lg"></div>
             </div>
-            <div className="text-left">
-              <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-emerald-400 bg-clip-text text-transparent">
+            <div className="text-center sm:text-left">
+              <h1 className="text-xl sm:text-2xl lg:text-4xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-emerald-400 bg-clip-text text-transparent leading-tight">
                 Upload Credit Report
-            </h1>
-            <p className="text-gray-300 mt-2 text-lg">
-              Securely process Experian XML files with advanced analytics
-            </p>
+              </h1>
+              <p className="text-gray-300 mt-1 sm:mt-2 text-sm sm:text-base lg:text-lg">
+                Securely process Experian XML files with advanced analytics
+              </p>
+            </div>
           </div>
         </div>
         
         {/* Info Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mt-6 sm:mt-8">
           <Card className="border-primary/20 hover:border-primary/40 transition-all">
-            <CardContent className="p-4 text-center">
-              <Shield className="h-8 w-8 text-primary mx-auto mb-2" />
-              <h3 className="font-semibold text-sm">Secure Processing</h3>
+            <CardContent className="p-3 sm:p-4 text-center">
+              <Shield className="h-6 sm:h-8 w-6 sm:w-8 text-primary mx-auto mb-2" />
+              <h3 className="font-semibold text-xs sm:text-sm">Secure Processing</h3>
               <p className="text-xs text-muted-foreground">End-to-end encryption</p>
             </CardContent>
           </Card>
           <Card className="border-green-500/20 hover:border-green-500/40 transition-all">
-            <CardContent className="p-4 text-center">
-              <Zap className="h-8 w-8 text-green-500 mx-auto mb-2" />
-              <h3 className="font-semibold text-sm">Fast Analysis</h3>
+            <CardContent className="p-3 sm:p-4 text-center">
+              <Zap className="h-6 sm:h-8 w-6 sm:w-8 text-green-500 mx-auto mb-2" />
+              <h3 className="font-semibold text-xs sm:text-sm">Fast Analysis</h3>
               <p className="text-xs text-muted-foreground">Instant processing</p>
             </CardContent>
           </Card>
           <Card className="border-blue-500/20 hover:border-blue-500/40 transition-all">
-            <CardContent className="p-4 text-center">
-              <Database className="h-8 w-8 text-blue-500 mx-auto mb-2" />
-              <h3 className="font-semibold text-sm">Data Insights</h3>
+            <CardContent className="p-3 sm:p-4 text-center">
+              <Database className="h-6 sm:h-8 w-6 sm:w-8 text-blue-500 mx-auto mb-2" />
+              <h3 className="font-semibold text-xs sm:text-sm">Data Insights</h3>
               <p className="text-xs text-muted-foreground">Comprehensive reports</p>
-            </CardContent>
-          </Card>
-        </div>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Enhanced Upload Area */}
       <Card className="overflow-hidden">
-        <CardContent className="p-8">
+        <CardContent className="p-4 sm:p-6 lg:p-8">
           {!file ? (
             <div
               className={cn(
-                "relative border-2 border-dashed rounded-xl p-12 text-center transition-all duration-300 cursor-pointer group",
+                "relative border-2 border-dashed rounded-xl p-6 sm:p-12 text-center transition-all duration-300 cursor-pointer group",
                 dragActive
                   ? 'border-primary bg-primary/5 scale-105'
                   : 'border-border hover:border-primary/50 hover:bg-accent/50'
@@ -230,21 +230,21 @@ const UploadPage: React.FC<UploadPageProps> = ({ onUploadSuccess }) => {
             >
               <div className="relative">
                 <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-blue-500/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                <Upload className={cn(
-                  "mx-auto h-16 w-16 mb-6 transition-all duration-300",
-                  dragActive ? "text-primary animate-bounce" : "text-muted-foreground group-hover:text-primary"
-                )} />
+              <Upload className={cn(
+                "mx-auto h-12 sm:h-16 w-12 sm:w-16 mb-4 sm:mb-6 transition-all duration-300",
+                dragActive ? "text-primary animate-bounce" : "text-muted-foreground group-hover:text-primary"
+              )} />
               </div>
-              <h3 className="text-xl font-semibold mb-2">
+              <h3 className="text-base sm:text-lg lg:text-xl font-semibold mb-2">
                 Drop your XML file here, or click to browse
               </h3>
-              <p className="text-muted-foreground mb-8">
+              <p className="text-muted-foreground mb-4 sm:mb-6 lg:mb-8 text-xs sm:text-sm lg:text-base">
                 Supports XML files up to 10MB. Only Experian credit report format accepted.
               </p>
               
               {/* Enhanced File Format Info */}
-              <div className="bg-accent/30 rounded-lg p-4 mb-6">
-                <div className="flex items-center justify-center space-x-4 text-sm">
+              <div className="bg-accent/30 rounded-lg p-3 sm:p-4 mb-4 sm:mb-6">
+                <div className="flex flex-col sm:flex-row items-center justify-center space-y-2 sm:space-y-0 sm:space-x-4 text-xs sm:text-sm">
                   <div className="flex items-center space-x-2">
                     <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                     <span>XML Format</span>
@@ -270,7 +270,7 @@ const UploadPage: React.FC<UploadPageProps> = ({ onUploadSuccess }) => {
                 />
                 <label
                   htmlFor="file-upload"
-                  className="cursor-pointer bg-gradient-to-r from-primary to-blue-600 text-primary-foreground px-8 py-4 rounded-lg hover:shadow-lg transition-all duration-200 inline-block font-medium hover:scale-105 active:scale-95"
+                  className="cursor-pointer bg-gradient-to-r from-primary to-blue-600 text-primary-foreground px-6 sm:px-8 py-3 sm:py-4 rounded-lg hover:shadow-lg transition-all duration-200 inline-block font-medium hover:scale-105 active:scale-95 text-sm sm:text-base"
                 >
                   Choose XML File
                 </label>
@@ -304,7 +304,7 @@ const UploadPage: React.FC<UploadPageProps> = ({ onUploadSuccess }) => {
 
               {/* Upload Button */}
               {!uploading && !result?.success && (
-                <div className="flex justify-center space-x-4">
+                <div className="flex flex-col sm:flex-row justify-center space-y-3 sm:space-y-0 sm:space-x-4">
                   <button
                     onClick={uploadFile}
                     className="bg-gradient-to-r from-green-600 to-green-700 text-white px-8 py-3 rounded-lg hover:shadow-lg transition-all duration-200 flex items-center font-medium hover:scale-105 active:scale-95"
@@ -358,7 +358,7 @@ const UploadPage: React.FC<UploadPageProps> = ({ onUploadSuccess }) => {
                         </p>
                       )}
                       
-                      <div className="flex space-x-4">
+                      <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
                         {result.success ? (
                           <>
                             <button
@@ -394,12 +394,12 @@ const UploadPage: React.FC<UploadPageProps> = ({ onUploadSuccess }) => {
 
       {/* Enhanced Instructions */}
       <Card className="border-accent">
-        <CardContent className="p-6">
-          <h3 className="font-semibold text-lg mb-4 flex items-center">
-            <FileText className="h-5 w-5 mr-2 text-primary" />
+        <CardContent className="p-4 sm:p-6">
+          <h3 className="font-semibold text-base sm:text-lg mb-4 flex items-center">
+            <FileText className="h-4 sm:h-5 w-4 sm:w-5 mr-2 text-primary" />
             Upload Guidelines
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
             <div className="space-y-3">
               <h4 className="font-medium text-sm text-muted-foreground uppercase tracking-wider">File Requirements</h4>
               <ul className="space-y-2 text-sm">

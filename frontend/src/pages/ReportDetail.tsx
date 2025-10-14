@@ -77,6 +77,56 @@ const ReportDetailPage: React.FC<ReportDetailPageProps> = ({ reportId, onBack })
     }
   };
 
+  const handleShare = () => {
+    if (navigator.share) {
+      navigator.share({
+        title: `Credit Report - ${report?.basicDetails.name}`,
+        text: `Credit Report #${report?.reportNumber} - Score: ${report?.creditScore.score}`,
+        url: window.location.href,
+      }).catch(err => console.log('Error sharing:', err));
+    } else {
+      // Fallback: copy to clipboard
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        alert('Report link copied to clipboard!');
+      }).catch(() => {
+        alert('Sharing not supported on this device');
+      });
+    }
+  };
+
+  const handleExport = () => {
+    if (!report) return;
+    
+    // Create a simple text export
+    const exportData = `
+Credit Report Details
+====================
+
+Report Number: ${report.reportNumber}
+Name: ${report.basicDetails.name}
+PAN: ${report.basicDetails.pan}
+Credit Score: ${report.creditScore.score}
+Report Date: ${formatDate(report.reportDate)}
+
+Summary:
+- Total Accounts: ${report.reportSummary.accounts.total}
+- Active Accounts: ${report.reportSummary.accounts.active}
+- Total Outstanding: ${formatCurrency(report.reportSummary.outstandingBalance.total)}
+
+Generated on: ${new Date().toLocaleDateString()}
+`;
+
+    const blob = new Blob([exportData], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `credit-report-${report.reportNumber}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center">
@@ -116,34 +166,42 @@ const ReportDetailPage: React.FC<ReportDetailPageProps> = ({ reportId, onBack })
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 p-6 space-y-8">
+    <div className="min-h-screen w-full bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 p-4 sm:p-6 space-y-6 sm:space-y-8">
       {/* Header */}
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
-        <div className="flex items-center space-x-4 mb-6 lg:mb-0">
+      <div className="flex flex-col space-y-4 lg:flex-row lg:items-center lg:justify-between lg:space-y-0">
+        <div className="flex items-start space-x-3 sm:space-x-4">
           <button
             onClick={() => onBack()}
-            className="p-3 bg-gray-800/50 hover:bg-gray-700/50 rounded-lg transition-all duration-200 border border-gray-700/50 backdrop-blur-sm"
+            className="p-2 sm:p-3 bg-gray-800/50 hover:bg-gray-700/50 rounded-lg transition-all duration-200 border border-gray-700/50 backdrop-blur-sm"
           >
-            <ArrowLeft className="h-5 w-5 text-gray-300" />
+            <ArrowLeft className="h-4 w-4 sm:h-5 sm:w-5 text-gray-300" />
           </button>
-          <div>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-emerald-400 bg-clip-text text-transparent">Credit Report Details</h1>
-            <p className="text-gray-300 text-lg mt-2">Report #{report.reportNumber}</p>
+          <div className="flex-1 min-w-0">
+            <h1 className="text-xl sm:text-2xl lg:text-4xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-emerald-400 bg-clip-text text-transparent leading-tight">
+              Credit Report Details
+            </h1>
+            <p className="text-gray-300 text-sm sm:text-base lg:text-lg mt-1 sm:mt-2">Report #{report.reportNumber}</p>
           </div>
         </div>
-        <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-lg p-4">
-          <div className="flex flex-wrap items-center gap-3">
-            <button className="flex items-center px-4 py-2 bg-gray-700/50 text-gray-300 hover:text-blue-400 hover:bg-gray-700 rounded-lg transition-all duration-200 border border-gray-600">
+        <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-lg p-3 sm:p-4">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
+            <button 
+              onClick={handleShare}
+              className="flex items-center justify-center px-3 sm:px-4 py-2 bg-gray-700/50 text-gray-300 hover:text-blue-400 hover:bg-gray-700 rounded-lg transition-all duration-200 border border-gray-600 text-sm"
+            >
               <Share className="h-4 w-4 mr-2" />
               Share
             </button>
-            <button className="flex items-center px-4 py-2 bg-gray-700/50 text-gray-300 hover:text-emerald-400 hover:bg-gray-700 rounded-lg transition-all duration-200 border border-gray-600">
+            <button 
+              onClick={handleExport}
+              className="flex items-center justify-center px-3 sm:px-4 py-2 bg-gray-700/50 text-gray-300 hover:text-emerald-400 hover:bg-gray-700 rounded-lg transition-all duration-200 border border-gray-600 text-sm"
+            >
               <Download className="h-4 w-4 mr-2" />
               Export
             </button>
             <button
               onClick={handleDelete}
-              className="flex items-center px-4 py-2 bg-red-900/20 text-red-400 hover:text-red-300 hover:bg-red-900/30 rounded-lg transition-all duration-200 border border-red-500/30"
+              className="flex items-center justify-center px-3 sm:px-4 py-2 bg-red-900/20 text-red-400 hover:text-red-300 hover:bg-red-900/30 rounded-lg transition-all duration-200 border border-red-500/30 text-sm"
             >
               <Trash2 className="h-4 w-4 mr-2" />
               Delete
@@ -153,135 +211,135 @@ const ReportDetailPage: React.FC<ReportDetailPageProps> = ({ reportId, onBack })
       </div>
 
       {/* Basic Details Card */}
-      <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-lg shadow-xl p-6">
-        <div className="flex items-center mb-6">
-          <User className="h-6 w-6 text-blue-400 mr-3 animate-pulse" />
-          <h2 className="text-xl font-semibold text-gray-100">Basic Details</h2>
+      <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-lg shadow-xl p-4 sm:p-6">
+        <div className="flex items-center mb-4 sm:mb-6">
+          <User className="h-5 w-5 sm:h-6 sm:w-6 text-blue-400 mr-2 sm:mr-3 animate-pulse" />
+          <h2 className="text-lg sm:text-xl font-semibold text-gray-100">Basic Details</h2>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           <div className="space-y-1">
-            <p className="text-sm font-medium text-gray-500">Full Name</p>
-            <p className="text-lg font-semibold text-gray-900">{report.basicDetails.name}</p>
+            <p className="text-xs sm:text-sm font-medium text-gray-400">Full Name</p>
+            <p className="text-base sm:text-lg font-semibold text-gray-100 break-words">{report.basicDetails.name}</p>
           </div>
           <div className="space-y-1">
-            <p className="text-sm font-medium text-gray-500">Mobile Phone</p>
-            <p className="text-lg text-gray-900 flex items-center">
-              <Phone className="h-4 w-4 mr-2 text-gray-400" />
-              {formatPhoneNumber(report.basicDetails.mobilePhone)}
+            <p className="text-xs sm:text-sm font-medium text-gray-400">Mobile Phone</p>
+            <p className="text-base sm:text-lg text-gray-100 flex items-center">
+              <Phone className="h-4 w-4 mr-2 text-gray-400 flex-shrink-0" />
+              <span className="break-all">{formatPhoneNumber(report.basicDetails.mobilePhone)}</span>
             </p>
           </div>
           <div className="space-y-1">
-            <p className="text-sm font-medium text-gray-500">PAN Number</p>
-            <p className="text-lg font-mono text-gray-900">{report.basicDetails.pan}</p>
+            <p className="text-xs sm:text-sm font-medium text-gray-400">PAN Number</p>
+            <p className="text-base sm:text-lg font-mono text-gray-100 break-all">{report.basicDetails.pan}</p>
           </div>
           <div className="space-y-1">
-            <p className="text-sm font-medium text-gray-500">Date of Birth</p>
-            <p className="text-lg text-gray-900">{formatDate(report.basicDetails.dateOfBirth)}</p>
+            <p className="text-xs sm:text-sm font-medium text-gray-400">Date of Birth</p>
+            <p className="text-base sm:text-lg text-gray-100">{formatDate(report.basicDetails.dateOfBirth)}</p>
           </div>
         </div>
 
         {/* Credit Score Highlight */}
-        <div className="mt-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-100">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-500 mb-1">Credit Score</p>
-              <div className="flex items-center space-x-2">
-                <span className={`text-3xl font-bold ${getCreditScoreColor(report.creditScore.score)}`}>
+        <div className="mt-4 sm:mt-6 p-3 sm:p-4 bg-gradient-to-r from-gray-700/50 to-gray-600/50 rounded-lg border border-gray-600/50">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-3 sm:space-y-0">
+            <div className="flex-1">
+              <p className="text-xs sm:text-sm font-medium text-gray-400 mb-1">Credit Score</p>
+              <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-3">
+                <span className={`text-2xl sm:text-3xl font-bold ${getCreditScoreColor(report.creditScore.score)}`}>
                   {report.creditScore.score || 'N/A'}
                 </span>
-                <span className={`text-sm font-medium px-2 py-1 rounded-full ${getCreditScoreColor(report.creditScore.score)} bg-opacity-10`}>
+                <span className={`text-xs sm:text-sm font-medium px-2 py-1 rounded-full bg-opacity-20 border border-current border-opacity-30 ${getCreditScoreColor(report.creditScore.score)} w-fit`}>
                   {getCreditScoreLabel(report.creditScore.score)}
                 </span>
               </div>
             </div>
-            <div className="text-right">
-              <p className="text-sm text-gray-500">Confidence Level</p>
-              <p className="text-lg font-semibold text-gray-900">{report.creditScore.confidence || 'N/A'}</p>
+            <div className="text-left sm:text-right">
+              <p className="text-xs sm:text-sm text-gray-400">Confidence Level</p>
+              <p className="text-base sm:text-lg font-semibold text-gray-100">{report.creditScore.confidence || 'N/A'}</p>
             </div>
           </div>
         </div>
       </div>
 
       {/* Report Summary */}
-      <div className="bg-white rounded-lg shadow-lg p-6">
-        <div className="flex items-center mb-6">
-          <TrendingUp className="h-6 w-6 text-green-600 mr-2" />
-          <h2 className="text-xl font-semibold text-gray-900">Report Summary</h2>
+      <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-lg shadow-xl p-4 sm:p-6">
+        <div className="flex items-center mb-4 sm:mb-6">
+          <TrendingUp className="h-5 w-5 sm:h-6 sm:w-6 text-green-400 mr-2 animate-pulse" />
+          <h2 className="text-lg sm:text-xl font-semibold text-gray-100">Report Summary</h2>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-6">
-          <div className="text-center p-4 bg-blue-50 rounded-lg">
-            <p className="text-2xl font-bold text-blue-600">{report.reportSummary.accounts.total}</p>
-            <p className="text-sm text-gray-600">Total Accounts</p>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4 mb-4 sm:mb-6">
+          <div className="text-center p-3 sm:p-4 bg-blue-600/20 border border-blue-500/30 rounded-lg">
+            <p className="text-lg sm:text-2xl font-bold text-blue-400">{report.reportSummary.accounts.total}</p>
+            <p className="text-xs sm:text-sm text-gray-300">Total Accounts</p>
           </div>
-          <div className="text-center p-4 bg-green-50 rounded-lg">
-            <p className="text-2xl font-bold text-green-600">{report.reportSummary.accounts.active}</p>
-            <p className="text-sm text-gray-600">Active</p>
+          <div className="text-center p-3 sm:p-4 bg-green-600/20 border border-green-500/30 rounded-lg">
+            <p className="text-lg sm:text-2xl font-bold text-green-400">{report.reportSummary.accounts.active}</p>
+            <p className="text-xs sm:text-sm text-gray-300">Active</p>
           </div>
-          <div className="text-center p-4 bg-gray-50 rounded-lg">
-            <p className="text-2xl font-bold text-gray-600">{report.reportSummary.accounts.closed}</p>
-            <p className="text-sm text-gray-600">Closed</p>
+          <div className="text-center p-3 sm:p-4 bg-gray-600/20 border border-gray-500/30 rounded-lg">
+            <p className="text-lg sm:text-2xl font-bold text-gray-400">{report.reportSummary.accounts.closed}</p>
+            <p className="text-xs sm:text-sm text-gray-300">Closed</p>
           </div>
-          <div className="text-center p-4 bg-red-50 rounded-lg">
-            <p className="text-2xl font-bold text-red-600">{report.reportSummary.accounts.default}</p>
-            <p className="text-sm text-gray-600">Default</p>
+          <div className="text-center p-3 sm:p-4 bg-red-600/20 border border-red-500/30 rounded-lg">
+            <p className="text-lg sm:text-2xl font-bold text-red-400">{report.reportSummary.accounts.default}</p>
+            <p className="text-xs sm:text-sm text-gray-300">Default</p>
           </div>
-          <div className="text-center p-4 bg-purple-50 rounded-lg col-span-2">
-            <p className="text-xl font-bold text-purple-600">
+          <div className="text-center p-3 sm:p-4 bg-purple-600/20 border border-purple-500/30 rounded-lg col-span-2 sm:col-span-3 lg:col-span-2">
+            <p className="text-base sm:text-xl font-bold text-purple-400 break-all">
               {formatCurrency(report.reportSummary.outstandingBalance.total)}
             </p>
-            <p className="text-sm text-gray-600">Total Outstanding</p>
+            <p className="text-xs sm:text-sm text-gray-300">Total Outstanding</p>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="p-4 border border-gray-200 rounded-lg">
-            <h3 className="font-semibold text-gray-900 mb-2">Outstanding Balances</h3>
-            <div className="space-y-2">
-              <div className="flex justify-between">
-                <span className="text-gray-600">Secured:</span>
-                <span className="font-medium">{formatCurrency(report.reportSummary.outstandingBalance.secured)}</span>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+          <div className="p-4 border border-gray-600/50 bg-gray-700/30 rounded-lg">
+            <h3 className="font-semibold text-gray-100 mb-3">Outstanding Balances</h3>
+            <div className="space-y-3">
+              <div className="flex justify-between items-center">
+                <span className="text-gray-400 text-sm">Secured:</span>
+                <span className="font-medium text-gray-100 text-sm">{formatCurrency(report.reportSummary.outstandingBalance.secured)}</span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">Unsecured:</span>
-                <span className="font-medium">{formatCurrency(report.reportSummary.outstandingBalance.unsecured)}</span>
+              <div className="flex justify-between items-center">
+                <span className="text-gray-400 text-sm">Unsecured:</span>
+                <span className="font-medium text-gray-100 text-sm">{formatCurrency(report.reportSummary.outstandingBalance.unsecured)}</span>
               </div>
             </div>
           </div>
           
-          <div className="p-4 border border-gray-200 rounded-lg">
-            <h3 className="font-semibold text-gray-900 mb-2">Credit Enquiries</h3>
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between">
-                <span className="text-gray-600">Last 7 days:</span>
-                <span className="font-medium">{report.reportSummary.enquiries.last7Days}</span>
+          <div className="p-4 border border-gray-600/50 bg-gray-700/30 rounded-lg">
+            <h3 className="font-semibold text-gray-100 mb-3">Credit Enquiries</h3>
+            <div className="space-y-3 text-sm">
+              <div className="flex justify-between items-center">
+                <span className="text-gray-400">Last 7 days:</span>
+                <span className="font-medium text-gray-100">{report.reportSummary.enquiries.last7Days}</span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">Last 30 days:</span>
-                <span className="font-medium">{report.reportSummary.enquiries.last30Days}</span>
+              <div className="flex justify-between items-center">
+                <span className="text-gray-400">Last 30 days:</span>
+                <span className="font-medium text-gray-100">{report.reportSummary.enquiries.last30Days}</span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">Last 90 days:</span>
-                <span className="font-medium">{report.reportSummary.enquiries.last90Days}</span>
+              <div className="flex justify-between items-center">
+                <span className="text-gray-400">Last 90 days:</span>
+                <span className="font-medium text-gray-100">{report.reportSummary.enquiries.last90Days}</span>
               </div>
             </div>
           </div>
 
-          <div className="p-4 border border-gray-200 rounded-lg">
-            <h3 className="font-semibold text-gray-900 mb-2">Report Info</h3>
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between">
-                <span className="text-gray-600">Date:</span>
-                <span className="font-medium">{formatDate(report.reportDate)}</span>
+          <div className="p-4 border border-gray-600/50 bg-gray-700/30 rounded-lg">
+            <h3 className="font-semibold text-gray-100 mb-3">Report Info</h3>
+            <div className="space-y-3 text-sm">
+              <div className="flex justify-between items-center">
+                <span className="text-gray-400">Date:</span>
+                <span className="font-medium text-gray-100">{formatDate(report.reportDate)}</span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">Version:</span>
-                <span className="font-medium">{report.version}</span>
+              <div className="flex justify-between items-center">
+                <span className="text-gray-400">Version:</span>
+                <span className="font-medium text-gray-100">{report.version}</span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">Processed:</span>
-                <span className="font-medium">{formatDate(report.createdAt)}</span>
+              <div className="flex justify-between items-center">
+                <span className="text-gray-400">Processed:</span>
+                <span className="font-medium text-gray-100">{formatDate(report.createdAt)}</span>
               </div>
             </div>
           </div>
@@ -289,39 +347,39 @@ const ReportDetailPage: React.FC<ReportDetailPageProps> = ({ reportId, onBack })
       </div>
 
       {/* Credit Accounts Information */}
-      <div className="bg-white rounded-lg shadow-lg p-6">
-        <div className="flex items-center justify-between mb-6">
+      <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-lg shadow-xl p-4 sm:p-6">
+        <div className="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0 mb-4 sm:mb-6">
           <div className="flex items-center">
-            <CreditCard className="h-6 w-6 text-purple-600 mr-2" />
-            <h2 className="text-xl font-semibold text-gray-900">Credit Accounts Information</h2>
+            <CreditCard className="h-5 w-5 sm:h-6 sm:w-6 text-purple-400 mr-2 animate-pulse" />
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-100">Credit Accounts Information</h2>
           </div>
-          <div className="flex space-x-2">
+          <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
             <button
               onClick={() => setActiveTab('overview')}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+              className={`px-3 sm:px-4 py-2 rounded-md text-xs sm:text-sm font-medium transition-colors ${
                 activeTab === 'overview' 
-                  ? 'bg-blue-100 text-blue-700' 
-                  : 'text-gray-600 hover:text-gray-800'
+                  ? 'bg-blue-600/20 border border-blue-500/30 text-blue-400' 
+                  : 'text-gray-400 hover:text-gray-200 border border-gray-600/50 bg-gray-700/30'
               }`}
             >
               Overview
             </button>
             <button
               onClick={() => setActiveTab('accounts')}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+              className={`px-3 sm:px-4 py-2 rounded-md text-xs sm:text-sm font-medium transition-colors ${
                 activeTab === 'accounts' 
-                  ? 'bg-blue-100 text-blue-700' 
-                  : 'text-gray-600 hover:text-gray-800'
+                  ? 'bg-blue-600/20 border border-blue-500/30 text-blue-400' 
+                  : 'text-gray-400 hover:text-gray-200 border border-gray-600/50 bg-gray-700/30'
               }`}
             >
               Detailed View
             </button>
             <button
               onClick={() => setActiveTab('history')}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+              className={`px-3 sm:px-4 py-2 rounded-md text-xs sm:text-sm font-medium transition-colors ${
                 activeTab === 'history' 
-                  ? 'bg-blue-100 text-blue-700' 
-                  : 'text-gray-600 hover:text-gray-800'
+                  ? 'bg-blue-600/20 border border-blue-500/30 text-blue-400' 
+                  : 'text-gray-400 hover:text-gray-200 border border-gray-600/50 bg-gray-700/30'
               }`}
             >
               Payment History
@@ -331,22 +389,22 @@ const ReportDetailPage: React.FC<ReportDetailPageProps> = ({ reportId, onBack })
 
         {/* Credit Cards Summary */}
         {creditCards.length > 0 && (
-          <div className="mb-6 p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border border-purple-100">
-            <h3 className="font-semibold text-gray-900 mb-3">Credit Cards Summary</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <p className="text-sm text-gray-600">Total Credit Cards</p>
-                <p className="text-xl font-bold text-purple-600">{creditCards.length}</p>
+          <div className="mb-4 sm:mb-6 p-4 bg-gradient-to-r from-purple-600/20 to-pink-600/20 rounded-lg border border-purple-500/30">
+            <h3 className="font-semibold text-gray-100 mb-3">Credit Cards Summary</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="text-center sm:text-left">
+                <p className="text-xs sm:text-sm text-gray-400">Total Credit Cards</p>
+                <p className="text-lg sm:text-xl font-bold text-purple-400">{creditCards.length}</p>
               </div>
-              <div>
-                <p className="text-sm text-gray-600">Total Credit Limit</p>
-                <p className="text-xl font-bold text-purple-600">
+              <div className="text-center sm:text-left">
+                <p className="text-xs sm:text-sm text-gray-400">Total Credit Limit</p>
+                <p className="text-lg sm:text-xl font-bold text-purple-400 break-all">
                   {formatCurrency(creditCards.reduce((sum, card) => sum + (card.creditLimit || 0), 0))}
                 </p>
               </div>
-              <div>
-                <p className="text-sm text-gray-600">Total Outstanding</p>
-                <p className="text-xl font-bold text-purple-600">
+              <div className="text-center sm:text-left">
+                <p className="text-xs sm:text-sm text-gray-400">Total Outstanding</p>
+                <p className="text-lg sm:text-xl font-bold text-purple-400 break-all">
                   {formatCurrency(creditCards.reduce((sum, card) => sum + card.currentBalance, 0))}
                 </p>
               </div>
@@ -355,58 +413,58 @@ const ReportDetailPage: React.FC<ReportDetailPageProps> = ({ reportId, onBack })
         )}
 
         {activeTab === 'overview' && (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6">
             {creditAccounts.map((account, index) => (
-              <div key={index} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-                <div className="flex items-start justify-between mb-3">
-                  <div>
-                    <h3 className="font-semibold text-gray-900">{account.subscriberName}</h3>
-                    <p className="text-sm text-gray-600">{account.accountType}</p>
+              <div key={index} className="border border-gray-600/50 bg-gray-700/30 rounded-lg p-4 hover:bg-gray-700/50 transition-all duration-200">
+                <div className="flex flex-col space-y-3 sm:flex-row sm:items-start sm:justify-between sm:space-y-0 mb-3">
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-semibold text-gray-100 break-words">{account.subscriberName}</h3>
+                    <p className="text-xs sm:text-sm text-gray-400 break-words">{account.accountType}</p>
                   </div>
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${getAccountStatusColor(account.accountStatus)}`}>
+                  <span className={`px-2 py-1 rounded-full text-xs font-medium w-fit ${getAccountStatusColor(account.accountStatus)}`}>
                     {account.accountStatus}
                   </span>
                 </div>
                 
-                <div className="space-y-2 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Account Number:</span>
-                    <span className="font-mono">{account.accountNumber}</span>
+                <div className="space-y-2 text-xs sm:text-sm">
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-400">Account Number:</span>
+                    <span className="font-mono text-gray-100 break-all text-right">{account.accountNumber}</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Current Balance:</span>
-                    <span className="font-medium">{formatCurrency(account.currentBalance)}</span>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-400">Current Balance:</span>
+                    <span className="font-medium text-gray-100">{formatCurrency(account.currentBalance)}</span>
                   </div>
                   {account.amountPastDue > 0 && (
-                    <div className="flex justify-between">
-                      <span className="text-red-600">Amount Overdue:</span>
-                      <span className="font-medium text-red-600">{formatCurrency(account.amountPastDue)}</span>
+                    <div className="flex justify-between items-center">
+                      <span className="text-red-400">Amount Overdue:</span>
+                      <span className="font-medium text-red-400">{formatCurrency(account.amountPastDue)}</span>
                     </div>
                   )}
                   {account.creditLimit && (
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Credit Limit:</span>
-                      <span className="font-medium">{formatCurrency(account.creditLimit)}</span>
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-400">Credit Limit:</span>
+                      <span className="font-medium text-gray-100">{formatCurrency(account.creditLimit)}</span>
                     </div>
                   )}
                 </div>
 
                 {account.creditLimit && (
                   <div className="mt-3">
-                    <div className="flex justify-between text-sm mb-1">
-                      <span className="text-gray-600">Utilization</span>
+                    <div className="flex justify-between text-xs sm:text-sm mb-1">
+                      <span className="text-gray-400">Utilization</span>
                       <span className={`font-medium ${getUtilizationColor(calculateAccountUtilization(account.currentBalance, account.creditLimit))}`}>
                         {calculateAccountUtilization(account.currentBalance, account.creditLimit).toFixed(1)}%
                       </span>
                     </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div className="w-full bg-gray-600 rounded-full h-2">
                       <div
                         className={`h-2 rounded-full transition-all duration-300 ${
                           calculateAccountUtilization(account.currentBalance, account.creditLimit) <= 30
-                            ? 'bg-green-500'
+                            ? 'bg-green-400'
                             : calculateAccountUtilization(account.currentBalance, account.creditLimit) <= 60
-                            ? 'bg-yellow-500'
-                            : 'bg-red-500'
+                            ? 'bg-yellow-400'
+                            : 'bg-red-400'
                         }`}
                         style={{
                           width: `${Math.min(calculateAccountUtilization(account.currentBalance, account.creditLimit), 100)}%`
@@ -421,78 +479,78 @@ const ReportDetailPage: React.FC<ReportDetailPageProps> = ({ reportId, onBack })
         )}
 
         {activeTab === 'accounts' && (
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             {creditAccounts.map((account, index) => (
-              <div key={index} className="border border-gray-200 rounded-lg p-6">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div key={index} className="border border-gray-600/50 bg-gray-700/30 rounded-lg p-4 sm:p-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">{account.subscriberName}</h3>
+                    <h3 className="text-base sm:text-lg font-semibold text-gray-100 mb-4 break-words">{account.subscriberName}</h3>
                     
                     <div className="space-y-3">
-                      <div className="grid grid-cols-2 gap-4 text-sm">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 text-xs sm:text-sm">
                         <div>
-                          <p className="text-gray-600">Account Number</p>
-                          <p className="font-mono font-medium">{account.accountNumber}</p>
+                          <p className="text-gray-400">Account Number</p>
+                          <p className="font-mono font-medium text-gray-100 break-all">{account.accountNumber}</p>
                         </div>
                         <div>
-                          <p className="text-gray-600">Account Type</p>
-                          <p className="font-medium">{account.accountType}</p>
+                          <p className="text-gray-400">Account Type</p>
+                          <p className="font-medium text-gray-100 break-words">{account.accountType}</p>
                         </div>
                         <div>
-                          <p className="text-gray-600">Portfolio Type</p>
-                          <p className="font-medium">{account.portfolioType}</p>
+                          <p className="text-gray-400">Portfolio Type</p>
+                          <p className="font-medium text-gray-100">{account.portfolioType}</p>
                         </div>
                         <div>
-                          <p className="text-gray-600">Open Date</p>
-                          <p className="font-medium">{formatDate(account.openDate)}</p>
+                          <p className="text-gray-400">Open Date</p>
+                          <p className="font-medium text-gray-100">{formatDate(account.openDate)}</p>
                         </div>
                       </div>
 
-                      <div className="grid grid-cols-2 gap-4 text-sm">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 text-xs sm:text-sm">
                         <div>
-                          <p className="text-gray-600">Current Balance</p>
-                          <p className="text-lg font-semibold text-gray-900">{formatCurrency(account.currentBalance)}</p>
+                          <p className="text-gray-400">Current Balance</p>
+                          <p className="text-base sm:text-lg font-semibold text-gray-100">{formatCurrency(account.currentBalance)}</p>
                         </div>
                         {account.creditLimit && (
                           <div>
-                            <p className="text-gray-600">Credit Limit</p>
-                            <p className="text-lg font-semibold text-gray-900">{formatCurrency(account.creditLimit)}</p>
+                            <p className="text-gray-400">Credit Limit</p>
+                            <p className="text-base sm:text-lg font-semibold text-gray-100">{formatCurrency(account.creditLimit)}</p>
                           </div>
                         )}
                       </div>
 
                       {account.amountPastDue > 0 && (
-                        <div className="p-3 bg-red-50 border border-red-200 rounded-md">
-                          <p className="text-red-600 font-medium">Amount Overdue: {formatCurrency(account.amountPastDue)}</p>
+                        <div className="p-3 bg-red-600/20 border border-red-500/30 rounded-md">
+                          <p className="text-red-400 font-medium text-xs sm:text-sm">Amount Overdue: {formatCurrency(account.amountPastDue)}</p>
                         </div>
                       )}
                     </div>
                   </div>
 
                   <div>
-                    <h4 className="font-semibold text-gray-900 mb-3 flex items-center">
-                      <MapPin className="h-4 w-4 mr-2" />
+                    <h4 className="font-semibold text-gray-100 mb-3 flex items-center text-sm sm:text-base">
+                      <MapPin className="h-4 w-4 mr-2 text-gray-400" />
                       Address Information
                     </h4>
-                    <div className="text-sm space-y-1">
-                      <p>{account.address.firstLine}</p>
-                      {account.address.secondLine && <p>{account.address.secondLine}</p>}
-                      {account.address.thirdLine && <p>{account.address.thirdLine}</p>}
+                    <div className="text-xs sm:text-sm space-y-1 text-gray-300">
+                      <p className="break-words">{account.address.firstLine}</p>
+                      {account.address.secondLine && <p className="break-words">{account.address.secondLine}</p>}
+                      {account.address.thirdLine && <p className="break-words">{account.address.thirdLine}</p>}
                       <p>{account.address.city}, {account.address.state}</p>
                       <p>{account.address.pinCode}</p>
                     </div>
 
                     <div className="mt-4">
-                      <h4 className="font-semibold text-gray-900 mb-2">Recent Activity</h4>
-                      <div className="text-sm space-y-1">
-                        <div className="flex justify-between">
-                          <span className="text-gray-600">Date Reported:</span>
-                          <span>{formatDate(account.dateReported)}</span>
+                      <h4 className="font-semibold text-gray-100 mb-2 text-sm sm:text-base">Recent Activity</h4>
+                      <div className="text-xs sm:text-sm space-y-2">
+                        <div className="flex justify-between items-center">
+                          <span className="text-gray-400">Date Reported:</span>
+                          <span className="text-gray-300">{formatDate(account.dateReported)}</span>
                         </div>
                         {account.dateClosed && (
-                          <div className="flex justify-between">
-                            <span className="text-gray-600">Date Closed:</span>
-                            <span>{formatDate(account.dateClosed)}</span>
+                          <div className="flex justify-between items-center">
+                            <span className="text-gray-400">Date Closed:</span>
+                            <span className="text-gray-300">{formatDate(account.dateClosed)}</span>
                           </div>
                         )}
                       </div>
@@ -505,39 +563,39 @@ const ReportDetailPage: React.FC<ReportDetailPageProps> = ({ reportId, onBack })
         )}
 
         {activeTab === 'history' && (
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             {creditAccounts.map((account, index) => (
-              <div key={index} className="border border-gray-200 rounded-lg p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+              <div key={index} className="border border-gray-600/50 bg-gray-700/30 rounded-lg p-4 sm:p-6">
+                <h3 className="text-base sm:text-lg font-semibold text-gray-100 mb-4 break-words">
                   {account.subscriberName} - Payment History
                 </h3>
                 
                 {account.accountHistory.length > 0 ? (
                   <div className="overflow-x-auto">
-                    <table className="min-w-full text-sm">
+                    <table className="min-w-full text-xs sm:text-sm">
                       <thead>
-                        <tr className="border-b border-gray-200">
-                          <th className="text-left py-2 px-3 font-medium text-gray-600">Period</th>
-                          <th className="text-left py-2 px-3 font-medium text-gray-600">Days Past Due</th>
-                          <th className="text-left py-2 px-3 font-medium text-gray-600">Status</th>
+                        <tr className="border-b border-gray-600/50">
+                          <th className="text-left py-2 px-2 sm:px-3 font-medium text-gray-400">Period</th>
+                          <th className="text-left py-2 px-2 sm:px-3 font-medium text-gray-400">Days Past Due</th>
+                          <th className="text-left py-2 px-2 sm:px-3 font-medium text-gray-400">Status</th>
                         </tr>
                       </thead>
                       <tbody>
                         {account.accountHistory.slice().reverse().map((history, historyIndex) => (
-                          <tr key={historyIndex} className="border-b border-gray-100">
-                            <td className="py-2 px-3">{history.month}/{history.year}</td>
-                            <td className="py-2 px-3">
-                              <span className={`font-medium ${history.daysPastDue > 0 ? 'text-red-600' : 'text-green-600'}`}>
+                          <tr key={historyIndex} className="border-b border-gray-600/30">
+                            <td className="py-2 px-2 sm:px-3 text-gray-300">{history.month}/{history.year}</td>
+                            <td className="py-2 px-2 sm:px-3">
+                              <span className={`font-medium ${history.daysPastDue > 0 ? 'text-red-400' : 'text-green-400'}`}>
                                 {history.daysPastDue}
                               </span>
                             </td>
-                            <td className="py-2 px-3">
+                            <td className="py-2 px-2 sm:px-3">
                               <span className={`px-2 py-1 rounded-full text-xs ${
                                 history.daysPastDue === 0 
-                                  ? 'bg-green-100 text-green-800' 
+                                  ? 'bg-green-600/20 border border-green-500/30 text-green-400' 
                                   : history.daysPastDue <= 30 
-                                  ? 'bg-yellow-100 text-yellow-800'
-                                  : 'bg-red-100 text-red-800'
+                                  ? 'bg-yellow-600/20 border border-yellow-500/30 text-yellow-400'
+                                  : 'bg-red-600/20 border border-red-500/30 text-red-400'
                               }`}>
                                 {history.daysPastDue === 0 ? 'On Time' : `${history.daysPastDue} days late`}
                               </span>
@@ -548,7 +606,7 @@ const ReportDetailPage: React.FC<ReportDetailPageProps> = ({ reportId, onBack })
                     </table>
                   </div>
                 ) : (
-                  <p className="text-gray-500 text-center py-8">No payment history available</p>
+                  <p className="text-gray-400 text-center py-8 text-sm">No payment history available</p>
                 )}
               </div>
             ))}

@@ -139,13 +139,13 @@ const AnalyticsPage: React.FC = () => {
   const totalScoreReports = Object.values(analyticsData.creditScoreDistribution).reduce((a, b) => a + b, 0);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 p-6 space-y-8">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 p-4 sm:p-6 space-y-6">
       {/* Header */}
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
+  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
         <div className="mb-6 lg:mb-0">
           <div className="flex items-center space-x-3 mb-3">
             <TrendingUp className="h-8 w-8 text-blue-400 animate-pulse" />
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-emerald-400 bg-clip-text text-transparent">
+            <h1 className="text-2xl sm:text-4xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-emerald-400 bg-clip-text text-transparent">
               Analytics Dashboard
             </h1>
           </div>
@@ -171,7 +171,7 @@ const AnalyticsPage: React.FC = () => {
       </div>
 
       {/* Key Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         <Card className="bg-gradient-to-br from-blue-600 to-blue-700 border-0 overflow-hidden group hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
           <CardContent className="p-6 text-white relative">
             <div className="absolute inset-0 bg-gradient-to-br from-blue-400/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -416,49 +416,94 @@ const AnalyticsPage: React.FC = () => {
           </div>
         
         {analyticsData.recentReports.length > 0 ? (
-          <div className="overflow-x-auto">
-            <div className="bg-gray-700/30 rounded-lg p-1 border border-gray-600/30">
-              <table className="min-w-full text-sm">
-                <thead>
-                  <tr className="border-b border-gray-600/50">
-                    <th className="text-left py-4 px-6 font-semibold text-gray-200">Name</th>
-                    <th className="text-left py-4 px-6 font-semibold text-gray-200">Mobile Phone</th>
-                    <th className="text-left py-4 px-6 font-semibold text-gray-200">PAN</th>
-                    <th className="text-left py-4 px-6 font-semibold text-gray-200">Credit Score</th>
-                    <th className="text-left py-4 px-6 font-semibold text-gray-200">Accounts</th>
-                    <th className="text-left py-4 px-6 font-semibold text-gray-200">Balance</th>
-                    <th className="text-left py-4 px-6 font-semibold text-gray-200">Date</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {analyticsData.recentReports.slice(0, 10).map((report) => (
-                    <tr key={report.id} className="border-b border-gray-600/30 hover:bg-gray-700/30 transition-colors duration-200">
-                      <td className="py-4 px-6 font-medium text-gray-100">{report.name}</td>
-                      <td className="py-4 px-6 text-gray-300 font-mono">
-                        {report.mobilePhone ? formatPhoneNumber(report.mobilePhone) : 'N/A'}
-                      </td>
-                      <td className="py-4 px-6 text-gray-300 font-mono">{report.pan}</td>
-                      <td className="py-4 px-6">
-                        {report.creditScore ? (
-                          <div className="flex items-center space-x-2">
-                            <span className={`font-bold ${getCreditScoreColor(report.creditScore)}`}>
-                              {report.creditScore}
-                            </span>
-                            <span className={`text-xs px-2 py-1 rounded-full font-medium ${getCreditScoreColor(report.creditScore)} bg-opacity-20 border border-current border-opacity-30`}>
-                              {getCreditScoreLabel(report.creditScore)}
-                            </span>
-                          </div>
-                        ) : (
-                          <span className="text-gray-500">N/A</span>
-                        )}
-                      </td>
-                      <td className="py-4 px-6 text-gray-300 font-medium">{report.totalAccounts}</td>
-                      <td className="py-4 px-6 font-bold text-emerald-400">{formatCurrency(report.totalBalance)}</td>
-                      <td className="py-4 px-6 text-gray-400">{new Date(report.createdAt).toLocaleDateString()}</td>
+          <div>
+            {/* Mobile View - Card Layout */}
+            <div className="block lg:hidden space-y-3">
+              {analyticsData.recentReports.slice(0, 10).map((report) => (
+                <div key={report.id} className="bg-gray-700/30 rounded-lg border border-gray-600/30 p-4 hover:bg-gray-700/50 transition-colors duration-200">
+                  <div className="space-y-3">
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="font-medium text-gray-100 text-sm mb-1">{report.name}</div>
+                        <div className="text-xs text-gray-400 font-mono">PAN: {report.pan}</div>
+                      </div>
+                      {report.creditScore && (
+                        <div className={`text-lg font-bold ${getCreditScoreColor(report.creditScore)}`}>
+                          {report.creditScore}
+                        </div>
+                      )}
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-3 text-xs">
+                      <div className="space-y-1">
+                        <div className="text-gray-400">Mobile</div>
+                        <div className="text-gray-300 font-mono">
+                          {report.mobilePhone ? formatPhoneNumber(report.mobilePhone) : 'N/A'}
+                        </div>
+                      </div>
+                      <div className="space-y-1">
+                        <div className="text-gray-400">Accounts</div>
+                        <div className="text-gray-300 font-medium">{report.totalAccounts}</div>
+                      </div>
+                      <div className="space-y-1">
+                        <div className="text-gray-400">Balance</div>
+                        <div className="font-bold text-emerald-400">{formatCurrency(report.totalBalance)}</div>
+                      </div>
+                      <div className="space-y-1">
+                        <div className="text-gray-400">Date</div>
+                        <div className="text-gray-400">{new Date(report.createdAt).toLocaleDateString()}</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Desktop View - Table Layout */}
+            <div className="hidden lg:block overflow-x-auto">
+              <div className="bg-gray-700/30 rounded-lg p-1 border border-gray-600/30">
+                <table className="min-w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-gray-600/50">
+                      <th className="text-left py-4 px-6 font-semibold text-gray-200">Name</th>
+                      <th className="text-left py-4 px-6 font-semibold text-gray-200">Mobile Phone</th>
+                      <th className="text-left py-4 px-6 font-semibold text-gray-200">PAN</th>
+                      <th className="text-left py-4 px-6 font-semibold text-gray-200">Credit Score</th>
+                      <th className="text-left py-4 px-6 font-semibold text-gray-200">Accounts</th>
+                      <th className="text-left py-4 px-6 font-semibold text-gray-200">Balance</th>
+                      <th className="text-left py-4 px-6 font-semibold text-gray-200">Date</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {analyticsData.recentReports.slice(0, 10).map((report) => (
+                      <tr key={report.id} className="border-b border-gray-600/30 hover:bg-gray-700/30 transition-colors duration-200">
+                        <td className="py-4 px-6 font-medium text-gray-100">{report.name}</td>
+                        <td className="py-4 px-6 text-gray-300 font-mono">
+                          {report.mobilePhone ? formatPhoneNumber(report.mobilePhone) : 'N/A'}
+                        </td>
+                        <td className="py-4 px-6 text-gray-300 font-mono">{report.pan}</td>
+                        <td className="py-4 px-6">
+                          {report.creditScore ? (
+                            <div className="flex items-center space-x-2">
+                              <span className={`font-bold ${getCreditScoreColor(report.creditScore)}`}>
+                                {report.creditScore}
+                              </span>
+                              <span className={`text-xs px-2 py-1 rounded-full font-medium ${getCreditScoreColor(report.creditScore)} bg-opacity-20 border border-current border-opacity-30`}>
+                                {getCreditScoreLabel(report.creditScore)}
+                              </span>
+                            </div>
+                          ) : (
+                            <span className="text-gray-500">N/A</span>
+                          )}
+                        </td>
+                        <td className="py-4 px-6 text-gray-300 font-medium">{report.totalAccounts}</td>
+                        <td className="py-4 px-6 font-bold text-emerald-400">{formatCurrency(report.totalBalance)}</td>
+                        <td className="py-4 px-6 text-gray-400">{new Date(report.createdAt).toLocaleDateString()}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         ) : (

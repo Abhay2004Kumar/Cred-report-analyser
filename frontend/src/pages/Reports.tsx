@@ -185,7 +185,84 @@ const ReportsPage: React.FC<ReportsPageProps> = ({ onViewReport }) => {
         </div>
       ) : (
         <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-lg shadow-xl overflow-hidden">
-          <div className="overflow-x-auto">
+          {/* Mobile View - Card Layout */}
+          <div className="block md:hidden space-y-4 p-4">
+            {filteredReports.map((report) => (
+              <div key={report.id} className="bg-gray-700/30 rounded-lg border border-gray-600/30 p-4 hover:bg-gray-700/50 transition-colors duration-200">
+                <div className="space-y-3">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <div className="text-sm font-semibold text-gray-100 mb-1">
+                        {report.name}
+                      </div>
+                      <div className="text-xs text-gray-400 font-mono">
+                        PAN: {report.pan}
+                      </div>
+                    </div>
+                    <div className="flex items-center space-x-2 ml-2">
+                      <button
+                        onClick={() => onViewReport?.(report.id)}
+                        className="p-2 text-blue-400 hover:text-blue-300 hover:bg-blue-500/20 rounded-lg transition-all duration-200"
+                        title="View Report"
+                      >
+                        <Eye className="h-4 w-4" />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(report.id, report.reportNumber)}
+                        disabled={deleting === report.id}
+                        className="p-2 text-red-400 hover:text-red-300 hover:bg-red-500/20 rounded-lg transition-all duration-200 disabled:opacity-50"
+                        title="Delete Report"
+                      >
+                        {deleting === report.id ? (
+                          <div className="animate-spin h-4 w-4 border-2 border-red-400 border-t-transparent rounded-full" />
+                        ) : (
+                          <Trash2 className="h-4 w-4" />
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-3 text-xs">
+                    <div className="space-y-1">
+                      <div className="text-gray-400">Mobile</div>
+                      <div className="text-gray-300">
+                        {report.mobilePhone ? formatPhoneNumber(report.mobilePhone) : 'N/A'}
+                      </div>
+                    </div>
+                    <div className="space-y-1">
+                      <div className="text-gray-400">Credit Score</div>
+                      <div className={`font-bold ${report.creditScore ? getCreditScoreColor(report.creditScore) : 'text-gray-500'}`}>
+                        {report.creditScore || 'N/A'}
+                      </div>
+                    </div>
+                    <div className="space-y-1">
+                      <div className="text-gray-400">Accounts</div>
+                      <div className="text-gray-300">{report.totalAccounts}</div>
+                    </div>
+                    <div className="space-y-1">
+                      <div className="text-gray-400">Balance</div>
+                      <div className="font-bold text-emerald-400 text-xs">
+                        {formatCurrency(report.totalBalance)}
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center justify-between pt-2 border-t border-gray-600/30">
+                    <div className="text-xs text-gray-500 bg-gray-600/30 px-2 py-1 rounded-md">
+                      #{report.reportNumber}
+                    </div>
+                    <div className="text-xs text-gray-400 flex items-center">
+                      <Calendar className="h-3 w-3 mr-1" />
+                      {formatDate(report.reportDate)}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Desktop View - Table Layout */}
+          <div className="hidden md:block overflow-x-auto">
             <table className="min-w-full">
               <thead className="bg-gray-700/50">
                 <tr>
