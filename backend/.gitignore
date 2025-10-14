@@ -46,6 +46,10 @@ build/Release
 node_modules/
 jspm_packages/
 
+# Package manager lock files (avoid mixing package managers)
+yarn.lock
+pnpm-lock.yaml
+
 # Snowpack dependency directory (https://snowpack.dev/)
 web_modules/
 

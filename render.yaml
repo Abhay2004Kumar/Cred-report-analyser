@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: creditsea-backend
+    runtime: node
+    plan: free
+    buildCommand: cd backend && rm -f yarn.lock && npm ci && npm run build
+    startCommand: cd backend && npm start
+    healthCheckPath: /health
+    env: node
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
