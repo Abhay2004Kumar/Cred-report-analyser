@@ -29,7 +29,7 @@ class Server {
 
     // CORS configuration
     this.app.use(cors({
-      origin: [config.FRONTEND_URL, 'http://localhost:3000', 'http://localhost:5173'],
+      origin: [config.FRONTEND_URL, 'http://localhost:3000', 'http://localhost:5173','https://cred-report-analyser.vercel.app'],
       credentials: true,
       methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
       allowedHeaders: ['Content-Type', 'Authorization']
