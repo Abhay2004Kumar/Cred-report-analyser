@@ -1,4 +1,4 @@
-import express, { Application, Request, Response } from 'express';
+import express, { Application, Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
@@ -28,12 +28,55 @@ class Server {
     this.app.use(helmet());
 
     // CORS configuration
-    this.app.use(cors({
-      origin: [config.FRONTEND_URL, 'http://localhost:3000', 'http://localhost:5173','https://cred-report-analyser.vercel.app'],
+    const corsOptions = {
+      origin: function (origin: string | undefined, callback: Function) {
+        // Allow requests with no origin (like mobile apps or curl requests)
+        if (!origin) return callback(null, true);
+        
+        const allowedOrigins = [
+          config.FRONTEND_URL,
+          'http://localhost:3000',
+          'http://localhost:5173',
+          'https://cred-report-analyser.vercel.app',
+          'https://cred-report-analyser-9ljd9lcdb-abhay-kumars-projects-a8b44dee.vercel.app',
+          'https://creditsea-assignment.vercel.app'
+        ];
+        
+        // In development, allow any localhost origin
+        if (config.NODE_ENV === 'development' && origin.includes('localhost')) {
+          return callback(null, true);
+        }
+        
+        // Allow any vercel.app subdomain in production for now
+        if (config.NODE_ENV === 'production' && origin.includes('.vercel.app')) {
+          console.log('CORS allowed Vercel origin:', origin);
+          return callback(null, true);
+        }
+        
+        if (allowedOrigins.includes(origin)) {
+          return callback(null, true);
+        }
+        
+        console.log('CORS blocked origin:', origin);
+        console.log('Allowed origins:', allowedOrigins);
+        callback(new Error('Not allowed by CORS'));
+      },
       credentials: true,
-      methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-      allowedHeaders: ['Content-Type', 'Authorization']
-    }));
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+      allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+      exposedHeaders: ['Content-Range', 'X-Content-Range']
+    };
+
+    this.app.use(cors(corsOptions));
+
+    // Handle preflight requests explicitly
+    this.app.options('*', cors(corsOptions));
+
+    // Log all requests for debugging
+    this.app.use((req: Request, res: Response, next: NextFunction) => {
+      console.log(`${new Date().toISOString()} - ${req.method} ${req.path} - Origin: ${req.get('Origin')}`);
+      next();
+    });
 
     // Rate limiting
     const limiter = rateLimit({

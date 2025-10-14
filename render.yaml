@@ -16,3 +16,5 @@ services:
         value: 10000
       - key: NPM_CONFIG_PRODUCTION
         value: false
+      - key: FRONTEND_URL
+        value: https://cred-report-analyser.vercel.app
