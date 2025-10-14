@@ -3,11 +3,11 @@ import {
   FileText,
   Upload,
   BarChart3,
-  CreditCard,
+  
   TrendingUp,
   AlertCircle,
   CheckCircle,
-  Users,
+  
   Activity,
   Zap,
   Shield,

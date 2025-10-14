@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { Upload, FileText, AlertCircle, CheckCircle, X, CloudUpload, Zap, Shield, Database } from 'lucide-react';
 import { creditReportApi } from '../services/api';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
+import { Card, CardContent } from '../components/ui/card';
 import { cn } from '../lib/utils';
 
 interface UploadResult {
@@ -289,7 +289,8 @@ const UploadPage: React.FC = () => {
             )}
           </div>
         )}
-      </div>
+        </CardContent>
+      </Card>
 
       {/* Result Display */}
       {result && (
@@ -345,9 +346,9 @@ const UploadPage: React.FC = () => {
                 </button>
               )}
             </div>
-          )}
-        </CardContent>
-      </Card>
+          </div>
+        </div>
+      )}
 
       {/* Enhanced Instructions */}
       <Card className="border-accent">

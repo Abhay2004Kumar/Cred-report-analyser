@@ -101,22 +101,22 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-gray-100">
       {/* Enhanced Header with Glass Effect */}
-      <header className="sticky top-0 z-50 glass border-b border-border/50">
+      <header className="sticky top-0 z-50 bg-gradient-to-r from-gray-900/95 to-gray-800/95 backdrop-blur-xl border-b border-gray-700/50 shadow-2xl">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-3">
                 <div className="relative">
-                  <Zap className="h-8 w-8 text-primary animate-pulse" />
-                  <div className="absolute inset-0 bg-primary/20 rounded-full blur-md"></div>
+                  <Zap className="h-8 w-8 text-blue-400 animate-pulse" />
+                  <div className="absolute inset-0 bg-blue-500/20 rounded-full blur-md"></div>
                 </div>
                 <div>
-                  <h1 className="text-xl font-bold bg-gradient-to-r from-primary to-blue-400 bg-clip-text text-transparent">
+                  <h1 className="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
                     CreditSea Analyzer
                   </h1>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-xs text-gray-400">
                     Experian XML Credit Report Processor
                   </p>
                 </div>
@@ -125,18 +125,18 @@ function App() {
               {/* Mobile Menu Button */}
               <button
                 onClick={() => setSidebarOpen(!sidebarOpen)}
-                className="lg:hidden p-2 rounded-lg hover:bg-accent transition-colors"
+                className="lg:hidden p-2 rounded-lg hover:bg-gray-700/50 text-gray-300 hover:text-white transition-all duration-200"
               >
                 {sidebarOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
               </button>
             </div>
             
             <div className="hidden md:flex items-center space-x-6">
-              <div className="flex items-center space-x-2 text-xs text-muted-foreground">
-                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+              <div className="flex items-center space-x-2 text-xs text-gray-300">
+                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-lg shadow-green-500/50"></div>
                 <span>MERN + TypeScript</span>
               </div>
-              <div className="text-xs text-muted-foreground">
+              <div className="text-xs text-gray-400 bg-gray-800/50 px-3 py-1 rounded-full border border-gray-700/50">
                 Professional Dark Theme
               </div>
             </div>
@@ -147,18 +147,18 @@ function App() {
       <div className="flex relative">
         {/* Enhanced Sidebar with Dark Theme */}
         <nav className={cn(
-          "fixed lg:relative z-40 lg:z-auto w-64 h-full lg:h-auto bg-card/50 backdrop-blur-xl border-r border-border/50 transition-transform duration-300 ease-out",
+          "fixed lg:relative z-40 lg:z-auto w-64 h-full lg:h-auto bg-gradient-to-b from-gray-900/95 to-gray-800/95 backdrop-blur-xl border-r border-gray-700/50 transition-transform duration-300 ease-out shadow-2xl",
           sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         )}>
           <div className="p-6 space-y-8">
             {/* Navigation Header */}
             <div className="flex items-center justify-between lg:justify-start">
-              <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
+              <h2 className="text-sm font-semibold text-gray-300 uppercase tracking-wider">
                 Navigation
               </h2>
               <button
                 onClick={() => setSidebarOpen(false)}
-                className="lg:hidden p-1.5 rounded-md hover:bg-accent transition-colors"
+                className="lg:hidden p-1.5 rounded-md hover:bg-gray-700/50 text-gray-300 hover:text-white transition-all"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -176,15 +176,15 @@ function App() {
                     className={cn(
                       'w-full group flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 hover:scale-105 active:scale-95',
                       currentPage === item.id
-                        ? 'bg-gradient-to-r from-primary/20 to-blue-500/20 text-primary border border-primary/20 shadow-lg'
-                        : 'text-muted-foreground hover:bg-accent hover:text-foreground hover:shadow-md'
+                        ? 'bg-gradient-to-r from-blue-600/30 to-purple-600/20 text-blue-300 border border-blue-500/30 shadow-lg backdrop-blur-sm'
+                        : 'text-gray-300 hover:bg-gray-700/50 hover:text-white hover:shadow-md backdrop-blur-sm'
                     )}
                   >
                     <div className={cn(
                       "p-2 rounded-lg mr-3 transition-colors",
                       currentPage === item.id
-                        ? "bg-primary/10 text-primary"
-                        : "group-hover:bg-accent"
+                        ? "bg-blue-500/20 text-blue-300"
+                        : "group-hover:bg-gray-600/50 text-gray-400 group-hover:text-gray-200"
                     )}>
                       <item.icon className="h-4 w-4" />
                     </div>
@@ -193,7 +193,7 @@ function App() {
                       <div className="text-xs opacity-70">{item.description}</div>
                     </div>
                     {currentPage === item.id && (
-                      <div className="w-1 h-8 bg-primary rounded-full animate-pulse"></div>
+                      <div className="w-1 h-8 bg-gradient-to-b from-blue-400 to-purple-500 rounded-full animate-pulse shadow-lg shadow-blue-500/20"></div>
                     )}
                   </button>
                 </li>
@@ -201,15 +201,15 @@ function App() {
             </ul>
             
             {/* Sidebar Footer */}
-            <div className="pt-8 border-t border-border/50">
-              <div className="p-4 rounded-xl bg-gradient-to-br from-primary/5 to-blue-500/5 border border-primary/10">
+            <div className="pt-8 border-t border-gray-700/50">
+              <div className="p-4 rounded-xl bg-gradient-to-br from-blue-600/10 to-purple-600/10 border border-blue-500/20 backdrop-blur-sm">
                 <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-blue-500 flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg">
                     <FileText className="h-5 w-5 text-white" />
                   </div>
                   <div>
-                    <div className="text-sm font-medium">Credit Reports</div>
-                    <div className="text-xs text-muted-foreground">XML Processing</div>
+                    <div className="text-sm font-medium text-gray-100">Credit Reports</div>
+                    <div className="text-xs text-gray-400">XML Processing</div>
                   </div>
                 </div>
               </div>
@@ -220,13 +220,13 @@ function App() {
         {/* Overlay for mobile */}
         {sidebarOpen && (
           <div 
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-30 lg:hidden"
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-30 lg:hidden"
             onClick={() => setSidebarOpen(false)}
           />
         )}
 
         {/* Enhanced Main Content */}
-        <main className="flex-1 min-h-screen">
+        <main className="flex-1 min-h-screen bg-gradient-to-br from-gray-900/50 to-gray-800/50">
           <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
             <div className="animate-fade-in">
               {renderPage()}
@@ -236,25 +236,25 @@ function App() {
       </div>
 
       {/* Enhanced Footer */}
-      <footer className="border-t border-border/50 bg-card/30 backdrop-blur-sm">
+      <footer className="border-t border-gray-700/50 bg-gradient-to-r from-gray-800/80 to-gray-900/80 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
             <div className="flex items-center space-x-4">
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-gray-300">
                 © 2025 CreditSea Analyzer. Professional Credit Report Processing.
               </p>
             </div>
-            <div className="flex items-center space-x-6 text-xs text-muted-foreground">
+            <div className="flex items-center space-x-6 text-xs text-gray-400">
               <span className="flex items-center space-x-2">
-                <div className="w-2 h-2 bg-primary rounded-full"></div>
+                <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse shadow-lg shadow-blue-500/50"></div>
                 <span>React + TypeScript</span>
               </span>
               <span className="flex items-center space-x-2">
-                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-lg shadow-green-500/50"></div>
                 <span>Node.js + MongoDB</span>
               </span>
               <span className="flex items-center space-x-2">
-                <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse shadow-lg shadow-purple-500/50"></div>
                 <span>Dark Theme UI</span>
               </span>
             </div>

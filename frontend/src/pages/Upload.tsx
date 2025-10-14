@@ -167,19 +167,20 @@ const UploadPage: React.FC<UploadPageProps> = ({ onUploadSuccess }) => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8 animate-fade-in">
-      {/* Enhanced Header */}
-      <div className="text-center space-y-4">
-        <div className="flex items-center justify-center space-x-3">
-          <div className="relative">
-            <CloudUpload className="h-12 w-12 text-primary animate-pulse" />
-            <div className="absolute inset-0 bg-primary/20 rounded-full blur-lg"></div>
-          </div>
-          <div className="text-left">
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-blue-400 bg-clip-text text-transparent">
-              Upload Credit Report
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 p-6">
+      <div className="max-w-4xl mx-auto space-y-8 animate-fade-in">
+        {/* Enhanced Header */}
+        <div className="text-center space-y-4">
+          <div className="flex items-center justify-center space-x-3">
+            <div className="relative">
+              <CloudUpload className="h-12 w-12 text-blue-400 animate-pulse" />
+              <div className="absolute inset-0 bg-blue-400/20 rounded-full blur-lg"></div>
+            </div>
+            <div className="text-left">
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-emerald-400 bg-clip-text text-transparent">
+                Upload Credit Report
             </h1>
-            <p className="text-muted-foreground mt-2 text-lg">
+            <p className="text-gray-300 mt-2 text-lg">
               Securely process Experian XML files with advanced analytics
             </p>
           </div>
@@ -436,6 +437,7 @@ const UploadPage: React.FC<UploadPageProps> = ({ onUploadSuccess }) => {
           </div>
         </CardContent>
       </Card>
+      </div>
     </div>
   );
 };
