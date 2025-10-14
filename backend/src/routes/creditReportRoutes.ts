@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router, Request, Response, NextFunction } from 'express';
 import { CreditReportController } from '../controllers/creditReportController';
 import { upload, handleUploadError, validateFileContent } from '../middleware/fileUpload';
 import { validateRequest } from '../middleware/validation';
@@ -7,13 +7,12 @@ const router = Router();
 const creditReportController = new CreditReportController();
 
 // Upload and process XML file
-router.post(
-  '/upload',
-  upload.single('xmlFile'),
-  handleUploadError,
-  validateFileContent,
-  creditReportController.uploadAndProcess
-);
+router.post('/upload', (req, res, next) => {
+  upload.single('xmlFile')(req, res, (err) => {
+    if (err) return next(err);
+    next();
+  });
+}, handleUploadError, validateFileContent, creditReportController.uploadAndProcess);
 
 // Get all credit reports (with pagination)
 router.get('/reports', creditReportController.getAllReports);

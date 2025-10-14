@@ -3,7 +3,7 @@ services:
     name: creditsea-backend
     runtime: node
     plan: free
-    buildCommand: cd backend && rm -f yarn.lock package-lock.json && rm -rf node_modules && npm cache clean --force && npm install --include=dev && npm run build
+    buildCommand: cd backend && rm -f yarn.lock && npm ci && npm run build
     startCommand: cd backend && npm start
     healthCheckPath: /health
     env: node
