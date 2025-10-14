@@ -166,8 +166,9 @@ Generated on: ${new Date().toLocaleDateString()}
   );
 
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 p-4 sm:p-6 space-y-6 sm:space-y-8">
-      {/* Header */}
+    <div className="fixed inset-0 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 overflow-y-auto">
+      <div className="min-h-screen p-4 sm:p-6 space-y-6 sm:space-y-8">
+        {/* Header */}
       <div className="flex flex-col space-y-4 lg:flex-row lg:items-center lg:justify-between lg:space-y-0">
         <div className="flex items-start space-x-3 sm:space-x-4">
           <button
@@ -613,6 +614,7 @@ Generated on: ${new Date().toLocaleDateString()}
           </div>
         )}
       </div>
+    </div>
     </div>
   );
 };
