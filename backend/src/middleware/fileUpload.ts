@@ -15,10 +15,10 @@ if (!fs.existsSync(uploadsDir)) {
 
 // Storage configuration
 const storage = multer.diskStorage({
-  destination: (req: Request, file: Express.Multer.File, cb: Function) => {
+  destination: (req, file, cb) => {
     cb(null, uploadsDir);
   },
-  filename: (req: Request, file: Express.Multer.File, cb: Function) => {
+  filename: (req, file, cb) => {
     // Generate unique filename with timestamp
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
     cb(null, `credit-report-${uniqueSuffix}${path.extname(file.originalname)}`);
@@ -26,7 +26,7 @@ const storage = multer.diskStorage({
 });
 
 // File filter for XML files only
-const fileFilter = (req: Request, file: any, cb: multer.FileFilterCallback): void => {
+const fileFilter = (req: any, file: any, cb: any): void => {
   // Check file extension
   const allowedExtensions = ['.xml'];
   const fileExtension = path.extname(file.originalname).toLowerCase();
